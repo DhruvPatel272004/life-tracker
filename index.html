@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0A0F1E" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Life Tracker — Personal productivity dashboard" />
+  <title>Life Tracker</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="styles/styles.css" />
+</head>
+<body>
+
+  <!-- Sidebar Nav -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">⬡</div>
+      <span class="brand-name">LifeTrack</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="dashboard">
+        <span class="nav-icon">◈</span>
+        <span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" data-tab="goals">
+        <span class="nav-icon">◎</span>
+        <span class="nav-label">Goals</span>
+      </button>
+      <button class="nav-item" data-tab="earnings">
+        <span class="nav-icon">◇</span>
+        <span class="nav-label">Earnings</span>
+      </button>
+      <button class="nav-item" data-tab="reminders">
+        <span class="nav-icon">◉</span>
+        <span class="nav-label">Reminders</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="export-btn" id="exportBtn" title="Export all data as JSON">
+        <span>↑</span> Export Data
+      </button>
+    </div>
+  </aside>
+
+  <!-- Bottom Nav (mobile) -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="bottom-nav-item active" data-tab="dashboard">
+      <span class="bottom-nav-icon">◈</span>
+      <span>Dashboard</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="goals">
+      <span class="bottom-nav-icon">◎</span>
+      <span>Goals</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="earnings">
+      <span class="bottom-nav-icon">◇</span>
+      <span>Earnings</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="reminders">
+      <span class="bottom-nav-icon">◉</span>
+      <span>Reminders</span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ── DASHBOARD TAB ── -->
+    <section class="tab-panel active" id="tab-dashboard">
+      <header class="panel-header">
+        <div>
+          <p class="panel-eyebrow">Overview</p>
+          <h1 class="panel-title">Dashboard</h1>
+        </div>
+        <div class="header-date" id="headerDate"></div>
+      </header>
+
+      <!-- Summary Cards -->
+      <div class="summary-grid">
+        <div class="summary-card card-earnings">
+          <div class="card-label">Total Earnings</div>
+          <div class="card-value" id="dash-total-earnings">$0.00</div>
+          <div class="card-sub" id="dash-earnings-count">0 entries</div>
+          <div class="card-glow"></div>
+        </div>
+        <div class="summary-card card-goals">
+          <div class="card-label">Goals</div>
+          <div class="card-value" id="dash-total-goals">0</div>
+          <div class="card-sub" id="dash-goals-complete">0 completed</div>
+          <div class="card-glow"></div>
+        </div>
+        <div class="summary-card card-reminders">
+          <div class="card-label">Reminders</div>
+          <div class="card-value" id="dash-total-reminders">0</div>
+          <div class="card-sub" id="dash-reminders-sub">active</div>
+          <div class="card-glow"></div>
+        </div>
+      </div>
+
+      <!-- Chart Section -->
+      <div class="chart-section">
+        <div class="section-header">
+          <h2 class="section-title">Earnings Trend</h2>
+          <span class="section-badge" id="chartPeriodLabel">Last 7 entries</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="earningsChart"></canvas>
+          <div class="chart-empty" id="chartEmpty">
+            <span class="empty-icon">◇</span>
+            <p>Add earnings to see your trend chart</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goals Progress on Dashboard -->
+      <div class="dash-goals-section">
+        <div class="section-header">
+          <h2 class="section-title">Active Goals</h2>
+          <button class="text-btn" data-tab="goals">View all →</button>
+        </div>
+        <div id="dash-goals-list" class="dash-goals-list">
+          <div class="empty-state small">
+            <p>No goals yet. <button class="inline-btn" data-tab="goals">Add one →</button></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── GOALS TAB ── -->
+    <section class="tab-panel" id="tab-goals">
+      <header class="panel-header">
+        <div>
+          <p class="panel-eyebrow">Track Progress</p>
+          <h1 class="panel-title">Goals</h1>
+        </div>
+        <div class="goal-streak" id="goalStreak">
+          <span class="streak-icon">🔥</span>
+          <span id="streakCount">0</span> day streak
+        </div>
+      </header>
+
+      <!-- Add Goal Form -->
+      <div class="form-card">
+        <h2 class="form-title">New Goal</h2>
+        <div class="form-row">
+          <input type="text" id="goalTitle" class="input-field" placeholder="What do you want to achieve?" maxlength="80" />
+        </div>
+        <div class="form-row">
+          <textarea id="goalDesc" class="input-field textarea-field" placeholder="Description (optional)" rows="2" maxlength="200"></textarea>
+        </div>
+        <div class="form-row form-row-split">
+            <label for="goalCategory" class="select-label">Goal Category</label>
+            <select id="goalCategory" class="input-field select-field">
+                <option value="personal">Personal</option>
+                <option value="health">Health</option>
+                <option value="career">Career</option>
+                <option value="finance">Finance</option>
+                <option value="learning">Learning</option>
+            </select>
+            <button class="btn-primary" id="addGoalBtn">Add Goal</button>
+        </div>
+      </div>
+
+      <!-- Goals List -->
+      <div class="section-header">
+        <h2 class="section-title">Your Goals</h2>
+        <div class="filter-tabs">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="active">Active</button>
+          <button class="filter-btn" data-filter="done">Done</button>
+        </div>
+      </div>
+      <div id="goalsList" class="items-list"></div>
+    </section>
+
+    <!-- ── EARNINGS TAB ── -->
+    <section class="tab-panel" id="tab-earnings">
+      <header class="panel-header">
+        <div>
+          <p class="panel-eyebrow">Financial Overview</p>
+          <h1 class="panel-title">Earnings</h1>
+        </div>
+        <div class="total-badge">
+          <span class="total-badge-label">Total</span>
+          <span class="total-badge-value" id="earningsTotalBadge">$0.00</span>
+        </div>
+      </header>
+
+      <!-- Add Earning Form -->
+      <div class="form-card">
+        <h2 class="form-title">Add Income</h2>
+        <div class="form-row form-row-split">
+          <input type="number" id="earningAmount" class="input-field" placeholder="Amount ($)" min="0" step="0.01" />
+          <input type="date" id="earningDate" class="input-field" aria-label="Earning Date" />
+        </div>
+        <div class="form-row form-row-split">
+          <input type="text" id="earningSource" class="input-field" placeholder="Source (e.g. Freelance, Salary)" maxlength="60" />
+          <button class="btn-primary" id="addEarningBtn">Add Entry</button>
+        </div>
+      </div>
+
+      <!-- Earnings List -->
+      <div class="section-header">
+        <h2 class="section-title">Income Entries</h2>
+        <span class="section-badge" id="earningsCountBadge">0 entries</span>
+      </div>
+      <div id="earningsList" class="items-list"></div>
+    </section>
+
+    <!-- ── REMINDERS TAB ── -->
+    <section class="tab-panel" id="tab-reminders">
+      <header class="panel-header">
+        <div>
+          <p class="panel-eyebrow">Stay on Track</p>
+          <h1 class="panel-title">Reminders</h1>
+        </div>
+        <button class="btn-outline" id="notifPermBtn">Enable Alerts</button>
+      </header>
+
+      <!-- Add Reminder Form -->
+      <div class="form-card">
+        <h2 class="form-title">New Reminder</h2>
+        <div class="form-row">
+          <input type="text" id="reminderText" class="input-field" placeholder="What do you need to remember?" maxlength="100" />
+        </div>
+        <div class="form-row form-row-split">
+          <input type="time" id="reminderTime" class="input-field" aria-label="Reminder Time" />
+          <select id="reminderPriority" class="input-field select-field" aria-label="Reminder Priority">
+            <option value="low">Low priority</option>
+            <option value="medium" selected>Medium priority</option>
+            <option value="high">High priority</option>
+          </select>
+          <button class="btn-primary" id="addReminderBtn">Add Reminder</button>
+        </div>
+      </div>
+
+      <!-- Reminders List -->
+      <div class="section-header">
+        <h2 class="section-title">Your Reminders</h2>
+        <span class="section-badge" id="remindersCountBadge">0 reminders</span>
+      </div>
+      <div id="remindersList" class="items-list"></div>
+    </section>
+
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
