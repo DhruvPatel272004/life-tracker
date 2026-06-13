@@ -7,8 +7,6 @@ const CACHE_URLS = [
   '/styles/styles.css',
   '/js/main.js',
   '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
 ];
 
 /* Install — cache core assets */
