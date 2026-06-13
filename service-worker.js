@@ -1,6 +1,6 @@
 /* ── Life Tracker Service Worker ──────────────── */
 
-const CACHE_NAME = 'lifetrack-v1';
+const CACHE_NAME = 'lifetrack-v2';
 const CACHE_URLS = [
   '/',
   '/index.html',

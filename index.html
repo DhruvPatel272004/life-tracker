@@ -48,6 +48,11 @@
         <span class="nav-icon">◉</span>
         <span class="nav-label">Reminders</span>
       </button>
+      <button class="nav-item" data-tab="ai">
+        <span class="nav-icon">✦</span>
+        <span class="nav-label">AI Coach</span>
+        <span class="nav-pill">AI</span>
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -74,6 +79,10 @@
     <button class="bottom-nav-item" data-tab="reminders">
       <span class="bottom-nav-icon">◉</span>
       <span>Reminders</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="ai">
+      <span class="bottom-nav-icon">✦</span>
+      <span>AI</span>
     </button>
   </nav>
 
@@ -164,15 +173,14 @@
           <textarea id="goalDesc" class="input-field textarea-field" placeholder="Description (optional)" rows="2" maxlength="200"></textarea>
         </div>
         <div class="form-row form-row-split">
-            <label for="goalCategory" class="select-label">Goal Category</label>
-            <select id="goalCategory" class="input-field select-field">
-                <option value="personal">Personal</option>
-                <option value="health">Health</option>
-                <option value="career">Career</option>
-                <option value="finance">Finance</option>
-                <option value="learning">Learning</option>
-            </select>
-            <button class="btn-primary" id="addGoalBtn">Add Goal</button>
+          <select id="goalCategory" class="input-field select-field" aria-label="Goal Category">
+            <option value="personal">Personal</option>
+            <option value="health">Health</option>
+            <option value="career">Career</option>
+            <option value="finance">Finance</option>
+            <option value="learning">Learning</option>
+          </select>
+          <button class="btn-primary" id="addGoalBtn">Add Goal</button>
         </div>
       </div>
 
@@ -255,6 +263,51 @@
         <span class="section-badge" id="remindersCountBadge">0 reminders</span>
       </div>
       <div id="remindersList" class="items-list"></div>
+    </section>
+
+    <!-- ── AI COACH TAB ── -->
+    <section class="tab-panel" id="tab-ai">
+      <header class="panel-header">
+        <div>
+          <p class="panel-eyebrow">Powered by Google Gemini</p>
+          <h1 class="panel-title">AI Coach</h1>
+        </div>
+        <button class="btn-outline" id="clearChatBtn" title="Clear chat history">Clear chat</button>
+      </header>
+
+      <div class="chat-shell">
+        <!-- Messages -->
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-welcome">
+            <div class="chat-welcome-icon">✦</div>
+            <h3>Your personal AI coach</h3>
+            <p>Powered by Google Gemini. I have full context of your goals, earnings, and reminders — ask me anything.</p>
+            <div class="chat-suggestions" id="chatSuggestions">
+              <button class="suggestion-chip" data-msg="Give me a summary of my life tracker data">Summarise my data</button>
+              <button class="suggestion-chip" data-msg="How am I doing with my goals? Any advice?">Goals advice</button>
+              <button class="suggestion-chip" data-msg="Analyse my earnings and suggest ways to increase income">Earnings analysis</button>
+              <button class="suggestion-chip" data-msg="What should I prioritise today based on my reminders?">Today's priorities</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input area -->
+        <div class="chat-input-area">
+          <div class="chat-input-wrap">
+            <textarea
+              id="chatInput"
+              class="chat-textarea"
+              placeholder="Ask your AI coach anything…"
+              rows="1"
+              maxlength="2000"
+            ></textarea>
+            <button class="chat-send-btn" id="chatSendBtn" title="Send">
+              <span id="chatSendIcon">↑</span>
+            </button>
+          </div>
+          <p class="chat-hint">Gemini has full context of your goals, earnings & reminders.</p>
+        </div>
+      </div>
     </section>
 
   </main>
